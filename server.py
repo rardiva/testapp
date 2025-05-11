@@ -4,7 +4,7 @@ import psycopg2
 app = Flask(__name__)
 
 # Connect to PostgreSQL
-conn = psycopg2.connect("dbname=TB_APP user=postgres password=100postgres100 host=localhost")
+conn = psycopg2.connect("dbname=TB_APP user=postgres password=100postgres100 host=localhost:5000")
 cur = conn.cursor()
 
 @app.route('/')

@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
 # PostgreSQL connection
-conn = psycopg2.connect("dbname=your_db user=your_user password=your_password host=your_host")
+conn = psycopg2.connect("dbname=test_s5y3 user=test_s5y3_user password=G4L3O3d1RzxQKFYFzIrn4q4zFWi2gW7u host=your_host")
 cursor = conn.cursor()
 
 @app.route('/')

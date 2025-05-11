@@ -6,7 +6,7 @@ import os  # Import os to handle environment variables for database connection.
 app = Flask(__name__)  # Initialize Flask application.
 
 # Database connection (pgAdmin)
-DATABASE_URL = os.getenv("DATABASE_URL", "your_pgadmin_connection_string")  # Get PostgreSQL connection URL from environment variables.
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://neondb_owner:npg_Ey2u5weIvskq@ep-ancient-cell-a4u0dvvp-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require")  # Get PostgreSQL connection URL from environment variables.
 conn = psycopg2.connect(DATABASE_URL)  # Establish a connection to PostgreSQL using the DATABASE_URL.
 cur = conn.cursor()  # Create a cursor object to execute SQL commands.
 

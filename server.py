@@ -12,7 +12,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Connect to PostgreSQL
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:WqFsYotfkVnboVFvnDnKWSTuDqEFQMWr@shuttle.proxy.rlwy.net:29650/railway")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:WqFsYotfkVnboVFvnDnKWSTuDqEFQMWr@postgres.railway.internal:5432/railway")
 conn = psycopg2.connect(DATABASE_URL)
 cur = conn.cursor()
 

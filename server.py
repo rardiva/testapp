@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # Database Connection (Replace with your NeonDB connection string)
-DATABASE_URL = "your_neondb_connection_string"
+DATABASE_URL = "postgresql://neondb_owner:npg_Ey2u5weIvskq@ep-ancient-cell-a4u0dvvp-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
 conn = psycopg2.connect(DATABASE_URL)
 cur = conn.cursor()
 

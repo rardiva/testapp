@@ -1,29 +1,42 @@
-from flask import Flask, request, jsonify  # Import Flask framework and functions for handling HTTP requests and JSON responses.
-import psycopg2  # Import PostgreSQL adapter to interact with the PostgreSQL database.
-import bcrypt  # Import bcrypt for password hashing to securely store user credentials.
-import os  # Import os to handle environment variables for database connection.
+from flask import Flask, request, jsonify
+import psycopg2
+import bcrypt
+import os
 
-app = Flask(__name__)  # Initialize Flask application.
+app = Flask(__name__)
 
-# Database connection (pgAdmin)
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://neondb_owner:npg_Ey2u5weIvskq@ep-ancient-cell-a4u0dvvp-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require")  # Get PostgreSQL connection URL from environment variables.
-conn = psycopg2.connect(DATABASE_URL)  # Establish a connection to PostgreSQL using the DATABASE_URL.
-cur = conn.cursor()  # Create a cursor object to execute SQL commands.
+# Database Connection (Replace with your NeonDB connection string)
+DATABASE_URL = "your_neondb_connection_string"
+conn = psycopg2.connect(DATABASE_URL)
+cur = conn.cursor()
 
-@app.route('/register', methods=['POST'])  # Define a route that listens for POST requests at /register.
-def register():  # Function to register a new user.
-    username = request.form['username']  # Retrieve the username submitted via the HTML form.
-    password = request.form['password']  # Retrieve the password submitted via the HTML form.
+@app.route('/register', methods=['POST'])
+def register():
+    username = request.form['username']
+    password = request.form['password']
 
     # Hash the password
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())  # Encrypt the password using bcrypt for security.
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     try:
-        cur.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, hashed_password))  # Insert username and hashed password into the users table.
-        conn.commit()  # Commit the transaction to save changes to the database.
-        return jsonify({"message": "Registration successful!"})  # Return a success message in JSON format.
+        cur.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, hashed_password.decode('utf-8')))
+        conn.commit()
+        return jsonify({"message": "Registration successful!"})
     except:
-        return jsonify({"message": "Username already exists!"})  # Return an error message if the username is already in use.
+        return jsonify({"message": "Username already exists!"})
 
-if __name__ == '__main__':  # Ensure this runs only when executed directly, not imported as a module.
-    app.run(debug=True)  # Start the Flask app in debug mode for easy troubleshooting.
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+
+    cur.execute("SELECT password FROM users WHERE username = %s", (username,))
+    user = cur.fetchone()
+
+    if user and bcrypt.checkpw(password.encode('utf-8'), user[0].encode('utf-8')):
+        return jsonify({"message": "Login successful!"})
+    else:
+        return jsonify({"message": "Invalid credentials!"})
+
+if __name__ == '__main__':
+    app.run(debug=True)

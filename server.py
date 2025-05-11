@@ -1,26 +1,26 @@
-import os
+from flask import Flask, request, render_template
 import psycopg2
-from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Use Railway's PostgreSQL connection string
-DATABASE_URL = os.getenv("docker pull ghcr.io/railwayapp-templates/postgres-ssl:15", "${{ Postgres.DATABASE_URL }}")
-conn = psycopg2.connect(DATABASE_URL)
+# Connect to PostgreSQL
+conn = psycopg2.connect("dbname=test user=postgres password=secret host=localhost")
 cur = conn.cursor()
 
-@app.route('/login', methods=['POST'])
-def login():
+@app.route('/')
+def index():
+    return render_template('register.html')
+
+@app.route('/register', methods=['POST'])
+def register():
     username = request.form['username']
     password = request.form['password']
 
-    cur.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
-    user = cur.fetchone()
+    # Store the credentials in PostgreSQL
+    cur.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
+    conn.commit()
 
-    if user:
-        return jsonify({"message": "Login successful!"})
-    else:
-        return jsonify({"message": "Invalid credentials!"})
+    return f"Account created for {username}!"
 
 if __name__ == '__main__':
     app.run(debug=True)

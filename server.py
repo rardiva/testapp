@@ -1,51 +1,29 @@
-from flask import Flask, render_template, request, redirect, session
+import os
 import psycopg2
 import bcrypt
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"
 
-# PostgreSQL connection
-conn = psycopg2.connect("dbname=test_s5y3 user=test_s5y3_user password=G4L3O3d1RzxQKFYFzIrn4q4zFWi2gW7u host=your_host")
-cursor = conn.cursor()
-
-@app.route('/')
-def home():
-    return render_template("index.html")
+# Connect to PostgreSQL
+DATABASE_URL = os.getenv("DATABASE_URL", "your_pgadmin_connection_string")
+conn = psycopg2.connect(DATABASE_URL)
+cur = conn.cursor()
 
 @app.route('/register', methods=['POST'])
 def register():
-    username = request.form['new_username']
-    password = request.form['new_password']
-    
-    # Hash the password
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-    
-    try:
-        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, hashed_password))
-        conn.commit()
-        return "Registration Successful"
-    except:
-        return "Username already exists"
-
-@app.route('/login', methods=['POST'])
-def login():
     username = request.form['username']
     password = request.form['password']
-    
-    cursor.execute("SELECT password FROM users WHERE username=%s", (username,))
-    user = cursor.fetchone()
-    
-    if user and bcrypt.checkpw(password.encode('utf-8'), user[0].encode('utf-8')):
-        session['username'] = username
-        return "Login Successful"
-    else:
-        return "Invalid Credentials"
 
-@app.route('/logout', methods=['POST'])
-def logout():
-    session.pop('username', None)
-    return "Logged Out"
+    # Hash the password
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+    try:
+        cur.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, hashed_password))
+        conn.commit()
+        return jsonify({"message": "Registration successful!"})
+    except:
+        return jsonify({"message": "Username already exists!"})
 
 if __name__ == '__main__':
     app.run(debug=True)

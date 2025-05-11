@@ -6,7 +6,7 @@
 </head>
 <body>
     <h2>Register</h2>
-    <form action="postgresql://postgres:WqFsYotfkVnboVFvnDnKWSTuDqEFQMWr@shuttle.proxy.rlwy.net:29650/railway/register" method="POST">
+    <form action="/register" method="POST">
         <label for="new_username">Username:</label>
         <input type="text" id="new_username" name="new_username" required>
         <br>
@@ -17,7 +17,7 @@
     </form>
 
     <h2>Login</h2>
-    <form action="https://your-railway-app-url/login" method="POST">
+    <form action="/login" method="POST">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
         <br>
@@ -28,7 +28,7 @@
     </form>
 
     <h2>Logout</h2>
-    <form action="https://your-railway-app-url/logout" method="POST">
+    <form action="/logout" method="POST">
         <input type="submit" value="Logout">
     </form>
 </body>

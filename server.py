@@ -9,7 +9,7 @@ cur = conn.cursor()
 
 @app.route('/')
 def index():
-    return render_template('register.html')
+    return render_template('index.html')
 
 @app.route('/register', methods=['POST'])
 def register():
